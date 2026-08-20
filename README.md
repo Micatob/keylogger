@@ -121,3 +121,11 @@ c2/parser.py           — command parser for email-based commands
 - Gmail requires an App Password (not your regular password). Enable 2FA on the account, then generate an app password at https://myaccount.google.com/apppasswords.
 - The executable will be flagged by some AVs regardless of obfuscation — this is inherent to keylogging software. The anti-detection measures reduce static signature hits but do not guarantee full evasion.
 - `PERSISTENCE` writes to `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` with a value name that does not contain obvious keywords.
+
+## Disclaimer
+
+This tool is provided for **educational and authorized security testing purposes only**. Unauthorized use of keyloggers or surveillance software against systems or individuals without explicit consent is illegal and unethical. The developer assumes no responsibility for misuse or damage caused by this software. By using this project, you agree to comply with all applicable local, state, federal, and international laws.
+
+## Developed By
+
+**Micato**
