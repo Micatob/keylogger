@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+build/
+dist/
+.credentials.enc
+pky_logs/
+*.log
+data_cache.tmp
+config.py
+
