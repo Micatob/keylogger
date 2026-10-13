@@ -1,25 +1,22 @@
-# Session State — keylogger course prep (2026-10-07)
+# Session State — credentials scrub + GitHub push (2026-10-13)
 
 ## Goal
-Prepare teaching material for a course module on how the keylogger in this repo works, how it could evolve, and how it reaches machines — framed for defense/detection.
+Remove credentials from the repo, replace with placeholders, scrub local history, push clean state to GitHub.
 
 ## Done
-- Explored full repo (`pykelogger.py`, `kky.py`, `keyhook.py`, `keylogger.cpp`, `antidetect.py`, `evasion.py`, `obfuscation.py`, `storage.py`, `crypto_utils.py`, `c2/`, `plugins/`, `config.py`, `pykelogger.spec`, `log_utils.py`).
-- Verified all base64-obfuscated constants by decoding (SMTP/IMAP hosts, Run key, `WindowsUpdateClient`, `pythonw.exe "{}"`, `[CMD]`, log banners, VM indicators).
-- Wrote `TEACHING_NOTES.md` (~3.5h lecture: architecture, 3 capture techniques, exfil, anti-analysis, persistence, obfuscation limits, crypto review, C2-as-RAT, AMSI/ETW, packaging, purple-team roadmap, initial access, detection handout, 16-item weakness register, 9 exercises).
+- `config.py` replaced with placeholders (`your-email@gmail.com`, `your-app-password`, `change-this-to-a-random-string`); `config.example.py` deleted (config.py itself is the template now).
+- Real credentials backed up locally to `config.local.py` (gitignored, never pushed). Workflow: copy over `config.py` to run; `git restore config.py` before committing.
+- `.gitignore` updated: removed `config.py` ignore; added `config.local.py`, `*.exe`, `*.zip`.
+- Untracked `__pycache__/*.pyc` (compiled config leaked secrets), `build/`, `dist/`, `.exe`, `.zip` artifacts from git.
+- Removed literal key `super-secret-key-123` from `TEACHING_NOTES.md` (2 refs).
+- Local history scrubbed (orphan rewrite + reflog expire + gc): old commits contained app passwords `ufsvdpunejmeonid` and `xhxuyisjzxheesqz` in `config.py` and compiled `.pyc`. Verified zero secret matches post-gc.
+- Pushed clean commit `5281a1b` to `https://github.com/Micatob/keylogger` (`master`), on top of existing remote history (no force push — remote history was already clean, placeholders only). Preserved remote-only `requirements.txt` (pynput, pywin32, requests).
+- Remote `origin` configured (was missing on Desktop clone). Old stale `origin/*` refs to Hermesfury/keylogger-github purged; that repo currently points to the same clean commit as Micatob/keylogger.
 
-## Key findings (verified)
-- `evasion.py`, `keyhook.py`, `storage.py`, `c2/`, `plugins/` are orphaned — never imported by `pykelogger.py`.
-- `antidetect.py` VM checks partly dead: driver paths say `druvers` not `drivers` (`:83-92`); registry keys corrupted (`Services^vmtools`, `Scci`) (`:63-74`).
-- Persistence broken in PyInstaller one-file build (`pykelogger.py:44` vs `pykelogger.spec:32`); `PERSISTENCE=False` by default.
-- Thread race on `logged_data` drops keystrokes (`pykelogger.py:71` vs `:151`).
-- C++ exfil broken: STARTTLS on implicit-TLS 465 + malformed AUTH PLAIN (`keylogger.cpp:263-266,294-334`); polling misses taps (`:459-469`).
-- Crypto: static salt, embedded key shipped in exe, silent base64 downgrade, XOR fallback.
-
-## User decisions
-- Leave all source code as-is; do NOT fix bugs for now.
-- User challenged "no bugs / clean" claim — answered with evidence it has bugs and is AV-loud.
-- Delivery/initial-access covered at threat-model + ATT&CK level only; lure crafting out of scope.
+## Key facts
+- GitHub: `Micatob/keylogger`, branch `master`. Desktop repo: `C:\Users\Hermes\Desktop\keylogger`. Old clone: `C:\Users\Hermes\Documents\GitHub\keylogger` (remote still Hermesfury/keylogger-github).
+- Three Gmail app passwords existed in history; two (`ufsv...`, `xhxu...`) are burned. Current one (`euethyhhczwkjper`) never committed — only in `config.local.py`.
 
 ## Pending / on return
-- User said they will be back later. No open code changes. Next step is theirs (e.g., review `TEACHING_NOTES.md`, adjust depth/audience, plan labs).
+- User must revoke old app passwords at https://myaccount.google.com/apppasswords and put the fresh one in `config.local.py`.
+- Optional: point Documents clone's remote at Micatob/keylogger, or delete/privatize Hermesfury/keylogger-github.
