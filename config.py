@@ -3,7 +3,7 @@ EMAIL_PASSWORD = 'your-app-password'
 EMAIL_RECEIVER = 'your-email@gmail.com'
 
 SEND_INTERVAL = 120
-DEBUG = False
+DEBUG = True
 PERSISTENCE = False
 LOG_FILE_NAME = "data_cache.tmp"
 ENCRYPTION_KEY = 'change-this-to-a-random-string'

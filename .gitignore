@@ -7,5 +7,7 @@ dist/
 pky_logs/
 *.log
 data_cache.tmp
-config.py
+config.local.py
+*.exe
+*.zip
 

